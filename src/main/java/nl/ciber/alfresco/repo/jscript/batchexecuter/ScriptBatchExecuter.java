@@ -123,7 +123,8 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
             runningJobs.put(job.getId(), job);
 
             final Scriptable cachedScope = getScope();
-            final String user = AuthenticationUtil.getFullyAuthenticatedUser();
+            //final String user = AuthenticationUtil.getFullyAuthenticatedUser();
+            final String user = AuthenticationUtil.getRunAsUser();
 
             RetryingTransactionHelper rth = sr.getTransactionService().getRetryingTransactionHelper();
 
