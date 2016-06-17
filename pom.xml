@@ -4,7 +4,7 @@
 
     <artifactId>batch-executer</artifactId>
     <groupId>nl.ciber.alfresco</groupId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Alfresco Batch Executer Tool</name>
@@ -117,7 +117,7 @@
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
                     <repositoryName>alfresco-js-batch-executer</repositoryName>
-                    <repositoryOwner>shazada</repositoryOwner>
+                    <repositoryOwner>ciber</repositoryOwner>
                 </configuration>
                 <executions>
                   <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
@@ -284,10 +284,9 @@
 
     <!-- Uses GitHub for source management -->
     <scm>
-        <connection>scm:git:git@github.com:shazada/alfresco-js-batch-executer.git</connection>
-        <url>scm:git:git@github.com:shazada/alfresco-js-batch-executer.git</url>
-        <developerConnection>scm:git:git@github.com:shazada/alfresco-js-batch-executer.git</developerConnection>
-      <tag>batch-executer-1.0</tag>
-  </scm>
+        <connection>scm:git:git@github.com:ciber/alfresco-js-batch-executer.git</connection>
+        <url>scm:git:git@github.com:ciber/alfresco-js-batch-executer.git</url>
+        <developerConnection>scm:git:git@github.com:ciber/alfresco-js-batch-executer.git</developerConnection>
+    </scm>
 
 </project>
