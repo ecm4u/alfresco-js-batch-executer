@@ -11,34 +11,6 @@ Alfresco JavaScript Batch Executer tool is aimed to solve this problem in **mult
 **transactional** manner. It can do the job 10 times faster, while clearly showing the progress and also
 allowing you to cancel running jobs.
 
-Installation
-------------
-
-To install the tool in your Alfresco instance you can simply download the
-[JAR file](https://github.com/ciber/alfresco-js-batch-executer/raw/mvn-repo/nl/ciber/alfresco/batch-executer/0.9/batch-executer-0.9.jar)
-from this project and put it to `alfresco/WEB-INF/lib` folder.
-
-If you use Maven to build your AMP or Alfresco WAR, you can add following dependency:
-
-```xml
-<dependency>
-    <groupId>nl.ciber.alfresco</groupId>
-    <artifactId>batch-executer</artifactId>
-    <version>0.9</version>
-</dependency>
-```
-
-from following repository:
-
-```xml
-<repositories>
-   <repository>
-      <id>batch-executer-mvn-repo</id>
-      <url>https://raw.github.com/ciber/alfresco-js-batch-executer/mvn-repo/</url>
-   </repository>
-</repositories>
-```
-
 Usage
 -----
 
@@ -177,10 +149,3 @@ Following parameters are supported when calling these functions.
 </tr>
 </tbody>
 </table>
-
-Bug tracker
------------
-
-Found a bug or have an idea of a new feature? Please create an issue here on GitHub!
-
-https://github.com/ciber/alfresco-js-batch-executer/issues
