@@ -74,6 +74,26 @@ batchExecuter.processArray({
 });
 ```
 
+Here is a last example which lets you reset the permission inheritance for a whole repository (took 9s to reset the permissions of 420 nodes) :
+
+```javascript
+batchExecuter.processFolderRecursively({
+    root: roothome,
+    batchSize: 5000,
+	browseSystemNodes:true,
+    threads: 1,
+    onNode: function(node) {
+		logger.log(node.name);
+		if(node.inheritsPermissions() ){
+			 node.setInheritsPermissions(false);
+			 node.save();
+			 node.setInheritsPermissions(true);
+			 node.save();
+		}
+    }
+});
+```
+
 You can monitor the progress in log files and control running jobs using a webscript page:
 
 http://localhost:8080/alfresco/s/ciber/batch-executer/jobs
@@ -105,7 +125,8 @@ Following parameters are supported when calling these functions.
         The folder to process, mandatory when calling <code>processFolderRecursively</code> function, ignored otherwise.
         The folder is traversed in depth-first-search manner and <strong>all</strong> nodes are fed to
         the processing function, including the root folder itself and any sub-folders and documents.
-        Only <code>cm:contains</code> associations are used to fetch children unless <b>browseSystemNodes</b> parameter is set to true 			then system and renditions will be browsed as well.
+        Only <code>cm:contains</code> associations are used to fetch children unless <b>browseSystemNodes</b> parameter is set to true 			then <code>sys:children</code> (for <code>sys:container</code>) , <code>rn:rendition</code> (for <code>cm:content</code>) , <code>cm:failedThumbnail</code> (for <code>cm:content</code>) will be fetched as well.
+       	WARNING : <code> cm:category_root</code>,<code>cm:mlRoot</code>,<code>cm:mlRoot</code>,<code>cm:mlRoot</code> are not yet supported
     </td>
 </tr>
 <tr>

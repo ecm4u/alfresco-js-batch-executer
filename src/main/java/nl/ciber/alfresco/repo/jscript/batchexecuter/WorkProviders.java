@@ -255,11 +255,11 @@ public class WorkProviders {
 					if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_CONTENT) ) {
 		           	 	head = pushNodes(head, RenditionModel.ASSOC_RENDITION);
 		           	 	head = pushNodes(head, ContentModel.ASSOC_FAILED_THUMBNAIL);
-					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_SYSTEM_FOLDER) || ds.isSubClass(ns.getType(head), ContentModel.TYPE_STOREROOT) ) {
+					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_CONTAINER) 
+							|| ds.isSubClass(ns.getType(head), ContentModel.TYPE_STOREROOT) ) {
 		           	 	head = pushNodes(head, ContentModel.ASSOC_CHILDREN);
+	           	 		head = pushNodes(head, ContentModel.ASSOC_CONTAINS);
 					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_PERSON) ) {
-	           	 		head = pushNodes(head, ContentModel.ASSOC_PREFERENCE_IMAGE);
-					}else if (ds.isSubClass(ns.getType(head), ContentModel.TYPE_STOREROOT) ) {
 	           	 		head = pushNodes(head, ContentModel.ASSOC_PREFERENCE_IMAGE);
 					}
 				}
