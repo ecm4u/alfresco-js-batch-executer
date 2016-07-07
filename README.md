@@ -83,7 +83,6 @@ batchExecuter.processFolderRecursively({
 	browseSystemNodes:true,
     threads: 1,
     onNode: function(node) {
-		logger.log(node.name);
 		if(node.inheritsPermissions() ){
 			 node.setInheritsPermissions(false);
 			 node.save();
