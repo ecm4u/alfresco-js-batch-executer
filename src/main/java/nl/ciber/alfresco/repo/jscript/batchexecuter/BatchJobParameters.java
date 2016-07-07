@@ -24,6 +24,7 @@ public abstract class BatchJobParameters {
     private static final String PARAM_ON_NODE = "onNode";
     private static final String PARAM_ON_BATCH = "onBatch";
     private static final String PARAM_DISABLE_RULES = "disableRules";
+    private static final String PARAM_BROWSE_SYSTEM_NODES = "browseSystemNodes";
 
     private static final int DEFAULT_BATCH_SIZE = 200;
     private static final int DEFAULT_THREADS = 4;
@@ -37,6 +38,7 @@ public abstract class BatchJobParameters {
     private String onBatchFunction;
     private Function onNode;
     private Function onBatch;
+    private boolean browseSystemNodes;
 
     private Status status;
 
@@ -101,7 +103,9 @@ public abstract class BatchJobParameters {
         /* Parse common parameters */
         job.setBatchSize(RhinoUtils.getInteger(paramsMap, PARAM_BATCH_SIZE, DEFAULT_BATCH_SIZE));
         job.setThreads(RhinoUtils.getInteger(paramsMap, PARAM_THREADS, DEFAULT_THREADS));
-        job.setDisableRules(RhinoUtils.getBoolean(paramsMap, PARAM_DISABLE_RULES, false));
+        job.setDisableRules(RhinoUtils.getBoolean(paramsMap, PARAM_DISABLE_RULES, false));        
+        job.setBrowseSystemNodes(RhinoUtils.getBoolean(paramsMap, PARAM_BROWSE_SYSTEM_NODES, false));
+
 
         final Function onNode = RhinoUtils.getFunction(paramsMap, PARAM_ON_NODE);
         final Function onBatch = RhinoUtils.getFunction(paramsMap, PARAM_ON_BATCH);
@@ -216,7 +220,14 @@ public abstract class BatchJobParameters {
     protected void setStatus(Status status) {
         this.status = status;
     }
+    
+    public boolean isBrowseSystemNodes() {
+		return browseSystemNodes;
+	}
 
+	public void setBrowseSystemNodes(boolean browseSystemNodes) {
+		this.browseSystemNodes = browseSystemNodes;
+	}
 
     /* Subclasses */
 

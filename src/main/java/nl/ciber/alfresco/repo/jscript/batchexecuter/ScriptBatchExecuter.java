@@ -1,12 +1,9 @@
 package nl.ciber.alfresco.repo.jscript.batchexecuter;
 
-import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.CancellableWorkProvider;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.CollectionWorkProviderFactory;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.FolderBrowsingWorkProviderFactory;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.NodeOrBatchWorkProviderFactory;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.CancellableWorker;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.ProcessBatchWorker;
-import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.ProcessNodeWorker;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.alfresco.repo.batch.BatchProcessor;
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
@@ -20,9 +17,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.CancellableWorkProvider;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.CollectionWorkProviderFactory;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.FolderBrowsingWorkProviderFactory;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.WorkProviders.NodeOrBatchWorkProviderFactory;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.CancellableWorker;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.ProcessBatchWorker;
+import nl.ciber.alfresco.repo.jscript.batchexecuter.Workers.ProcessNodeWorker;
 
 /**
  * JavaScript object which helps execute big data changes in Alfresco.
@@ -32,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * and multiple threads.
  *
  * @author Bulat Yaminov
+ * @author Corentin Roux
  */
 @SuppressWarnings("UnusedDeclaration")
 public class ScriptBatchExecuter extends BaseScopableProcessorExtension implements ApplicationContextAware {
@@ -41,9 +43,9 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
     private ServiceRegistry sr;
     private ApplicationContext applicationContext;
 
-    private static ConcurrentHashMap<String, BatchJobParameters> runningJobs = new ConcurrentHashMap<>(10);
+    private static ConcurrentHashMap<String, BatchJobParameters> runningJobs = new ConcurrentHashMap(10);
     private static ConcurrentHashMap<String, Pair<CancellableWorkProvider, CancellableWorker>>
-            runningWorkProviders = new ConcurrentHashMap<>(10);
+            runningWorkProviders = new ConcurrentHashMap(10);
 
     /**
      * Starts processing an array of objects, applying a function to each object or batch of objects
@@ -52,7 +54,7 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
      * This is a blocking call.
      *
      * @param params processing params, with array stored as 'items' property. See
-     * {@link nl.ciber.alfresco.repo.jscript.batchexecuter.BatchJobParameters} for all parameters.
+     * {@link src.main.java.nl.ciber.alfresco.repo.jscript.batchexecuter.batchexecuter.BatchJobParameters} for all parameters.
      * @return job ID.
      */
     public String processArray(Object params) {
@@ -67,7 +69,7 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
      * This is a blocking call.
      *
      * @param params processing params, with the folder ScriptNode stored as 'root' property. See
-     * {@link nl.ciber.alfresco.repo.jscript.batchexecuter.BatchJobParameters} for all parameters.
+     * {@link src.main.java.nl.ciber.alfresco.repo.jscript.batchexecuter.batchexecuter.BatchJobParameters} for all parameters.
      * @return job ID.
      */
     public String processFolderRecursively(Object params) {
@@ -133,14 +135,14 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
 
                 // Let the BatchProcessor do the batching
                 CancellableWorkProvider<Object> workProvider =
-                        workFactory.newNodesWorkProvider(data, job.getBatchSize());
+                        workFactory.newNodesWorkProvider(data, job.getBatchSize(), job.isBrowseSystemNodes());
                 ProcessNodeWorker worker = new ProcessNodeWorker(job.getOnNode(), cachedScope,
                         user, job.getDisableRules(), sr.getRuleService(), logger, this);
 
                 runningWorkProviders.put(job.getId(), new Pair<CancellableWorkProvider,
                         CancellableWorker>(workProvider, worker));
 
-                BatchProcessor<Object> processor = new BatchProcessor<>(job.getName(), rth,
+                BatchProcessor<Object> processor = new BatchProcessor(job.getName(), rth,
                         workProvider,
                         job.getThreads(), job.getBatchSize(), applicationContext, logger, 1000);
                 logger.info(String.format("Starting batch processor '%s' to process %s",
@@ -151,14 +153,14 @@ public class ScriptBatchExecuter extends BaseScopableProcessorExtension implemen
 
                 // Split into batches here so that onBatch function can process them
                 CancellableWorkProvider<List<Object>> workProvider =
-                        workFactory.newBatchesWorkProvider(data, job.getBatchSize());
+                        workFactory.newBatchesWorkProvider(data, job.getBatchSize(), job.isBrowseSystemNodes());
                 ProcessBatchWorker worker = new ProcessBatchWorker(job.getOnBatch(), cachedScope,
                         user, job.getDisableRules(), sr.getRuleService(), logger, this);
 
                 runningWorkProviders.put(job.getId(), new Pair<CancellableWorkProvider,
                         CancellableWorker>(workProvider, worker));
 
-                BatchProcessor<List<Object>> processor = new BatchProcessor<>(job.getName(), rth,
+                BatchProcessor<List<Object>> processor = new BatchProcessor(job.getName(), rth,
                         workProvider,
                         job.getThreads(), 1, applicationContext, logger, 1);
                 logger.info(String.format("Starting batch processor '%s' to process %s with batch function",

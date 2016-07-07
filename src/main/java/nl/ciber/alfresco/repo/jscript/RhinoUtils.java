@@ -14,7 +14,7 @@ import java.util.*;
 public class RhinoUtils {
 
     public static Map<String, Object> convertToMap(ScriptableObject o) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap();
         Object[] propIds = o.getIds();
         for (Object propId : propIds) {
             if (propId instanceof String) {
@@ -61,7 +61,7 @@ public class RhinoUtils {
             if (value instanceof NativeArray) {
                 NativeArray array = (NativeArray) value;
                 Object[] propIds = array.getIds();
-                result = new ArrayList<>(propIds.length);
+                result = new ArrayList(propIds.length);
                 for (Object propId : propIds) {
                     if (propId instanceof Integer) {
                         result.add(array.get((Integer) propId, array));
