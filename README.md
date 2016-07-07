@@ -105,7 +105,7 @@ Following parameters are supported when calling these functions.
         The folder to process, mandatory when calling <code>processFolderRecursively</code> function, ignored otherwise.
         The folder is traversed in depth-first-search manner and <strong>all</strong> nodes are fed to
         the processing function, including the root folder itself and any sub-folders and documents.
-        Only <code>cm:contains</code> associations are used to fetch children.
+        Only <code>cm:contains</code> associations are used to fetch children unless <b>browseSystemNodes</b> parameter is set to true 			then system and renditions will be browsed as well.
     </td>
 </tr>
 <tr>
