@@ -46,23 +46,31 @@ batchExecuter.processArray({
 });
 ```
 
-Here is a last example which lets you reset the permission inheritance for a whole repository (took 9s to reset the permissions of 420 nodes) :
+Here is a last example which lets you reset the permission inheritance for a whole repository (took 2 days to reset the permissions of 4 Million nodes) :
 
 ```javascript
-batchExecuter.processFolderRecursively({
-    root: roothome,
-    batchSize: 5000,
-	browseSystemNodes:true,
-    threads: 1,
-    onNode: function(node) {
-		if(node.inheritsPermissions() ){
-			 node.setInheritsPermissions(false);
-			 node.save();
-			 node.setInheritsPermissions(true);
-			 node.save();
-		}
-    }
-});
+function inheritanceReset(parentNode) {
+	logger.log("Processing " + parentNode.name + "...");
+	batchExecuter.processFolderRecursively({
+		root: parentNode,
+		batchSize: 10000,
+		threads: 1,
+			onNode: function(node){
+				if(node.inheritsPermissions()){
+				  node.setInheritsPermissions(false);
+				  node.save();
+				  node.setInheritsPermissions(true);
+				  node.save();
+				}
+			}
+		});
+   }
+logger.log("START - Permission Inheritance RESET");
+inheritanceReset(search.selectNodes("/sys:system/sys:people/.")[0]);
+inheritanceReset(search.selectNodes("/app:company_home/app:guest_home/.")[0]);
+inheritanceReset(search.selectNodes("/app:company_home/app:user_homes/.")[0]);
+//inheritanceReset(search.selectNodes("/app:company_home/st:sites/.")[0]);
+logger.log("END - Permission Inheritance RESET");
 ```
 
 You can monitor the progress in log files and control running jobs using a webscript page:
